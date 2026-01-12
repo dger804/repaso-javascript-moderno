@@ -1,24 +1,22 @@
-
-import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-
-import { User } from './entities/user.entity';
+import { Inject, Injectable } from '@nestjs/common';
+import { Pool } from 'pg';
 
 @Injectable()
 export class UsersService {
-
   constructor(
-    @InjectRepository(User)
-    private usersRepo: Repository<User>,
+    @Inject('PG_POOL') private readonly pool: Pool
   ) {}
 
-  create(name: string) {
-    const user = this.usersRepo.create({ name });
-    return this.usersRepo.save(user);
+  async getUsers() {
+    const result = await this.pool.query('SELECT * FROM users');
+    return result.rows;
   }
 
-  findAll() {
-    return this.usersRepo.find();
+  async createUser(name: string, email: string) {
+    const result = await this.pool.query(
+      'INSERT INTO users(name, email) VALUES ($1, $2) RETURNING *',
+      [name, email]
+    );
+    return result.rows[0];
   }
 }

@@ -12,7 +12,7 @@ export class UsersController {
   }
 
   @Post()
-  create(@Body() body: { name: string; email: string }) {
+  create(@Body() body: CreateUserDto) {
     return this.usersService.createUser(body.name, body.email);
   }
 }

@@ -8,14 +8,10 @@ import { User } from './entities/user.entity';
 import { UsersRepository } from './users.repository';
 import { createPostgresPool } from '../infra/database/postgres/postgres.pool';
 
-const dbProvider = {
-  provide: 'PG_POOL',
-  useFactory: createPostgresPool,
-};
-
 @Module({
-  controllers: [UsersController],
-  providers: [dbProvider, UsersService],
   imports: [TypeOrmModule.forFeature([User])],
+  providers: [UsersService],
+  controllers: [UsersController],
+  exports: [UsersService]
 })
 export class UsersModule {}

@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { NotFoundException } from '@nestjs/common';
+import { BadRequestException, NotFoundException } from '@nestjs/common';
 
 import { User } from './entities/user.entity';
 import { Role } from '../auth/roles.enum'
@@ -36,7 +36,11 @@ export class UsersService {
     });
   }
   
-  async updateRole(userId: number, role: Role) {
+  async updateRole(userId: number, role: Role, currentUserId: number) {
+
+    if (userId === currentUserId) {
+      throw new BadRequestException('You cannot change your own role');
+    }
     const user = await this.findById(userId);
     if (!user) throw new NotFoundException('User not found');
 

@@ -39,8 +39,9 @@ export class UsersController {
   updateUserRole(
     @Param('id', ParseIntPipe) id: number,
     @Body() dto: UpdateRoleDto,
+    @CurrentUser() user
   ) {
-    return this.usersService.updateRole(id, dto.role);
+    return this.usersService.updateRole(id, dto.role, user.id);
   }
 
   @UseGuards(JwtAuthGuard)

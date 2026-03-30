@@ -1,4 +1,4 @@
-import { Controller, Get, Body, Post, UseGuards, Req, Param, Patch, ParseIntPipe } from '@nestjs/common';
+import { Controller, Get, Body, Post, UseGuards, Param, Patch, ParseIntPipe, Query } from '@nestjs/common';
 
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -15,8 +15,11 @@ export class UsersController {
 
   @UseGuards(JwtAuthGuard)
   @Get()
-  getUsers() {
-    return this.usersService.getUsers();
+  getUsers(
+    @Query('page') page = 1,
+    @Query('limit') limit = 10,
+  ) {
+    return this.usersService.getUsers(page, limit);
   }
 
   @Post()

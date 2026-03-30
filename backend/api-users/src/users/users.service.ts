@@ -13,8 +13,19 @@ export class UsersService {
     private repo: Repository<User>,
   ) {}
 
-  async getUsers() {
-    return this.repo.find();
+  async getUsers(page: number, limit: number) {
+    limit = limit > 100 ? 100 : limit;
+    const [data, total] = await this.repo.findAndCount({
+      skip: (page - 1) * limit,
+      take: limit,
+    });
+
+    return {
+      data,
+      total,
+      page,
+      lastPage: Math.ceil(total / limit),
+    };
   }
 
   async createUser(email: string, password: string) {

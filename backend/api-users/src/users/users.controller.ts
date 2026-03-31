@@ -8,6 +8,7 @@ import { Role } from '../auth/roles.enum';
 import { RolesGuard } from 'src/auth/roles.guard';
 import { UpdateRoleDto } from './dto/update-role.dto';
 import { CurrentUser } from 'src/auth/decorators/current-user.decorator';
+import { GetUsersDto } from './dto/get-users.dto';
 
 @Controller('users')
 export class UsersController {
@@ -15,11 +16,8 @@ export class UsersController {
 
   @UseGuards(JwtAuthGuard)
   @Get()
-  getUsers(
-    @Query('page') page = 1,
-    @Query('limit') limit = 10,
-  ) {
-    return this.usersService.getUsers(page, limit);
+  getUsers(@Query() query: GetUsersDto) {
+    return this.usersService.getUsers(query);
   }
 
   @Post()

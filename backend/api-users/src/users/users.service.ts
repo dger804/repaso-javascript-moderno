@@ -5,6 +5,7 @@ import { BadRequestException, NotFoundException } from '@nestjs/common';
 
 import { User } from './entities/user.entity';
 import { Role } from '../auth/roles.enum'
+import { GetUsersDto } from './dto/get-users.dto';
 
 @Injectable()
 export class UsersService {
@@ -13,12 +14,30 @@ export class UsersService {
     private repo: Repository<User>,
   ) {}
 
-  async getUsers(page: number, limit: number) {
-    limit = limit > 100 ? 100 : limit;
-    const [data, total] = await this.repo.findAndCount({
-      skip: (page - 1) * limit,
-      take: limit,
-    });
+  async getUsers(query: GetUsersDto) {
+    const { page, limit, role, email, sortBy, order } = query;
+
+    const qb = this.repo.createQueryBuilder('user');
+
+    if (role) {
+      qb.andWhere('user.role = :role', { role });
+    }
+
+    if (email) {
+      qb.andWhere('user.email ILIKE :email', {
+        email: `%${email}%`,
+      });
+    }
+
+    if (sortBy) {
+      qb.orderBy(`user.${sortBy}`, order);
+    } else {
+      qb.orderBy('user.id', 'ASC'); // default
+    }
+
+    qb.skip((page - 1) * limit).take(limit);
+
+    const [data, total] = await qb.getManyAndCount();
 
     return {
       data,

@@ -31,4 +31,8 @@ export class GetUsersDto {
   @IsOptional()
   @IsIn(['ASC', 'DESC'])
   order: 'ASC' | 'DESC' = 'ASC';
+
+  @IsOptional()
+  @IsString()
+  search?: string;
 }

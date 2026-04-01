@@ -15,9 +15,16 @@ export class UsersService {
   ) {}
 
   async getUsers(query: GetUsersDto) {
-    const { page, limit, role, email, sortBy, order } = query;
+    const { page, limit, role, email, sortBy, order, search } = query;
 
     const qb = this.repo.createQueryBuilder('user');
+
+    if (search) {
+      qb.andWhere(
+        '(user.email ILIKE :search)',
+        { search: `%${search}%` },
+      );
+    }
 
     if (role) {
       qb.andWhere('user.role = :role', { role });

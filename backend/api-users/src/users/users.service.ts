@@ -21,7 +21,7 @@ export class UsersService {
 
     if (search) {
       qb.andWhere(
-        '(user.email ILIKE :search)',
+        '(user.email ILIKE :search OR user.name ILIKE :search)',
         { search: `%${search}%` },
       );
     }

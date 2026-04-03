@@ -9,6 +9,7 @@ import { RolesGuard } from 'src/auth/roles.guard';
 import { UpdateRoleDto } from './dto/update-role.dto';
 import { CurrentUser } from 'src/auth/decorators/current-user.decorator';
 import { GetUsersDto } from './dto/get-users.dto';
+import { UpdateProfileDto } from './dto/update-profile.dto';
 
 @Controller('users')
 export class UsersController {
@@ -49,5 +50,14 @@ export class UsersController {
   @Get('me')
   getMe(@CurrentUser() user) {
     return user;
+  }
+
+  @Patch('me')
+  @UseGuards(JwtAuthGuard)
+  updateMe(
+    @CurrentUser() user,
+    @Body() dto: UpdateProfileDto
+  ) {
+    return this.usersService.updateProfile(user.id, dto);
   }
 }

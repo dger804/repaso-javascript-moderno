@@ -6,6 +6,7 @@ import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { User } from './entities/user.entity';
 import { Role } from '../auth/roles.enum'
 import { GetUsersDto } from './dto/get-users.dto';
+import { UpdateProfileDto } from './dto/update-profile.dto';
 
 @Injectable()
 export class UsersService {
@@ -82,6 +83,18 @@ export class UsersService {
     if (!user) throw new NotFoundException('User not found');
 
     user.role = role;
+    return this.repo.save(user);
+  }
+
+  async updateProfile(userId: number, dto: UpdateProfileDto) {
+    const user = await this.findById(userId);
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    Object.assign(user, dto);
+
     return this.repo.save(user);
   }
 }

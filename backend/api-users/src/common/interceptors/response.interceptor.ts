@@ -14,7 +14,7 @@ export class ResponseInterceptor<T> implements NestInterceptor<T, any> {
       map((data) => {
         // Si ya viene con meta (paginación)
         if (data?.data && data?.total !== undefined) {
-          const { data: items, total, page, lastPage } = data;
+          const { items, total, page, lastPage } = data;
 
           return {
             data: items,

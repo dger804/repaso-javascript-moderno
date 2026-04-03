@@ -47,7 +47,7 @@ export class UsersService {
     const [data, total] = await qb.getManyAndCount();
 
     return {
-      data,
+      items: data,
       total,
       page,
       lastPage: Math.ceil(total / limit),

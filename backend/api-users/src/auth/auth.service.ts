@@ -21,7 +21,16 @@ export class AuthService {
     const user = await this.usersService.createUser(email, hash);
 
     return {
-      token: this.jwtService.sign({ sub: user.id, email: user.email }),
+      access_token: this.jwtService.sign({
+        sub: user.id,
+        email: user.email,
+        role: user.role,
+      }),
+      user: {
+        id: user.id,
+        email: user.email,
+        role: user.role,
+      },
     };
   }
 
@@ -33,11 +42,16 @@ export class AuthService {
     if (!valid) throw new UnauthorizedException('Invalid credentials');
 
     return {
-      token: this.jwtService.sign({
+      access_token: this.jwtService.sign({
         sub: user.id,
         email: user.email,
         role: user.role
       }),
+      user: {
+        id: user.id,
+        email: user.email,
+        role: user.role,
+      },
     };
   }
 }

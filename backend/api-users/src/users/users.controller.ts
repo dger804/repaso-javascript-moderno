@@ -10,7 +10,9 @@ import { UpdateRoleDto } from './dto/update-role.dto';
 import { CurrentUser } from 'src/auth/decorators/current-user.decorator';
 import { GetUsersDto } from './dto/get-users.dto';
 import { UpdateProfileDto } from './dto/update-profile.dto';
+import { ApiBearerAuth } from '@nestjs/swagger';
 
+@ApiBearerAuth()
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}

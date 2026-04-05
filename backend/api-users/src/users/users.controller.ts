@@ -1,4 +1,5 @@
 import { Controller, Get, Body, Post, UseGuards, Param, Patch, ParseIntPipe, Query } from '@nestjs/common';
+import { ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
 
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -10,14 +11,13 @@ import { UpdateRoleDto } from './dto/update-role.dto';
 import { CurrentUser } from 'src/auth/decorators/current-user.decorator';
 import { GetUsersDto } from './dto/get-users.dto';
 import { UpdateProfileDto } from './dto/update-profile.dto';
-import { ApiBearerAuth } from '@nestjs/swagger';
 
-@ApiBearerAuth()
+@UseGuards(JwtAuthGuard)
+@ApiBearerAuth('access-token')
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
-
-  @UseGuards(JwtAuthGuard)
+ 
   @Get()
   getUsers(@Query() query: GetUsersDto) {
     return this.usersService.getUsers(query);
@@ -28,7 +28,10 @@ export class UsersController {
     return this.usersService.createUser(body.name, body.email);
   }
 
-  @UseGuards(RolesGuard)
+  @ApiOperation({
+    summary: 'Get admin data',
+    description: '🔒 Requires ADMIN role',
+  })
   @Roles(Role.ADMIN)
   @Get('admin')
   getAdminData(@CurrentUser() user) {
@@ -37,7 +40,7 @@ export class UsersController {
       user,
     };
   }
-  @UseGuards(JwtAuthGuard, RolesGuard)
+  @UseGuards(RolesGuard)
   @Roles(Role.ADMIN)
   @Patch(':id/role')
   updateUserRole(
@@ -48,14 +51,12 @@ export class UsersController {
     return this.usersService.updateRole(id, dto.role, user.id);
   }
 
-  @UseGuards(JwtAuthGuard)
   @Get('me')
   getMe(@CurrentUser() user) {
     return user;
   }
 
   @Patch('me')
-  @UseGuards(JwtAuthGuard)
   updateMe(
     @CurrentUser() user,
     @Body() dto: UpdateProfileDto

@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { loginRequest } from '../api/api';
-import { saveToken } from '../auth/auth';
+
+import { login } from './auth.service';
 
 export default function Login() {
   const [email, setEmail] = useState('');
@@ -10,32 +10,24 @@ export default function Login() {
     e.preventDefault();
 
     try {
-      const data = await loginRequest(email, password);
-
-      saveToken(data.access_token);
-
+      const data = await login(email, password);
       console.log('Login OK', data);
-
-      // luego redirigimos (más adelante)
     } catch (err) {
       console.error(err);
-      alert('Credenciales incorrectas');
     }
   };
 
   return (
     <form onSubmit={handleSubmit}>
-      <h2>Login Admin</h2>
-
       <input
         type="email"
-        placeholder="email"
+        value={email}
         onChange={(e) => setEmail(e.target.value)}
       />
 
       <input
         type="password"
-        placeholder="password"
+        value={password}
         onChange={(e) => setPassword(e.target.value)}
       />
 

@@ -15,3 +15,15 @@ export const loginRequest = async (email: string, password: string) => {
 
   return res.json();
 };
+
+export const getMeRequest = async (token: string) => {
+  const res = await fetch(`${API_URL}/auth/me`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  if (!res.ok) throw new Error('Unauthorized');
+
+  return res.json();
+};

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import { login } from './auth.service';
+import { login, getMe } from './auth.service';
 
 export default function Login() {
   const [email, setEmail] = useState('');
@@ -10,8 +10,9 @@ export default function Login() {
     e.preventDefault();
 
     try {
-      const data = await login(email, password);
-      console.log('Login OK', data);
+      await login(email, password);
+      const user = await getMe();
+      console.log('USER', user);
     } catch (err) {
       console.error(err);
     }

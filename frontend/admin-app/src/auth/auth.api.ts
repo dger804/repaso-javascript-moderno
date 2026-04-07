@@ -27,5 +27,7 @@ export const getMeRequest = async (token: string) => {
 
   if (!res.ok) throw new Error('Unauthorized');
 
-  return res.json();
+  const json = await res.json();
+
+  return json.data;
 };

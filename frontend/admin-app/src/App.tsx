@@ -1,7 +1,19 @@
-import Login from './auth/Login';
+import { useAuth } from './auth/AuthContext';
 
 function App() {
-  return <Login />;
+  const { user, loading } = useAuth();
+
+  if (loading) return <p>Loading...</p>;
+
+  return (
+    <div>
+      {user ? (
+        <p>Bienvenido {user.email}</p>
+      ) : (
+        <p>No autenticado</p>
+      )}
+    </div>
+  );
 }
 
 export default App;

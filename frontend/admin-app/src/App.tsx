@@ -1,18 +1,26 @@
-import { useAuth } from './auth/AuthContext';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+
+//import Login from './features/auth/Login';
+//import Dashboard from './features/dashboard/Dashboard';
+import ProtectedRoute from './auth/ProtectedRoute';
+import Login from './auth/Login';
 
 function App() {
-  const { user, loading } = useAuth();
-
-  if (loading) return <p>Loading...</p>;
-
   return (
-    <div>
-      {user ? (
-        <p>Bienvenido {user.email}</p>
-      ) : (
-        <p>No autenticado</p>
-      )}
-    </div>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/login" element={<Login />} />
+
+        <Route
+          path="/"
+          element={
+            <ProtectedRoute>
+              <Login />
+            </ProtectedRoute>
+          }
+        />
+      </Routes>
+    </BrowserRouter>
   );
 }
 

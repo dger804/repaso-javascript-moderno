@@ -13,7 +13,9 @@ export const loginRequest = async (email: string, password: string) => {
     throw new Error('Login failed');
   }
 
-  return res.json();
+  const json = await res.json();
+
+  return json.data;
 };
 
 export const getMeRequest = async (token: string) => {

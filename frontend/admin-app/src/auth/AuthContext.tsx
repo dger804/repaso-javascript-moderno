@@ -11,13 +11,15 @@ type User = {
 type AuthContextType = {
   user: User | null;
   loading: boolean;
-setUser: (user: User | null) => void;
+  setUser: (user: User | null) => void;
+  logout: () => void;
 };
 
 const AuthContext = createContext<AuthContextType>({
   user: null,
   loading: true,
   setUser: () => {},
+  logout: () => {},
 });
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
@@ -39,8 +41,13 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     loadUser();
   }, []);
 
+  const logoutUser = () => {
+    localStorage.removeItem('token');
+    setUser(null);
+  };
+
   return (
-    <AuthContext.Provider value={{ user, loading, setUser }}>
+    <AuthContext.Provider value={{ user, loading, setUser, logout: logoutUser}}>
       {children}
     </AuthContext.Provider>
   );

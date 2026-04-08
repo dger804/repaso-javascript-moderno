@@ -15,3 +15,7 @@ export const getMe = async () => {
 
   return getMeRequest(token);
 };
+
+export const logout = () => {
+  localStorage.removeItem('token');
+};

@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useState } from 'react';
 
 import { getMe } from './auth.service';
+import { logout as logoutService } from './auth.service';
 
 type User = {
   id: number;
@@ -41,13 +42,13 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     loadUser();
   }, []);
 
-  const logoutUser = () => {
-    localStorage.removeItem('token');
+  const logout = () => {
+    logoutService();
     setUser(null);
   };
 
   return (
-    <AuthContext.Provider value={{ user, loading, setUser, logout: logoutUser}}>
+    <AuthContext.Provider value={{ user, loading, setUser, logout: logout}}>
       {children}
     </AuthContext.Provider>
   );

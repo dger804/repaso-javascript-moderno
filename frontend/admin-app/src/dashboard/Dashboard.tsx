@@ -1,7 +1,6 @@
 import { Link } from 'react-router-dom';
 
 import { useAuth } from '../auth/AuthContext';
-import UsersList from '../users/UsersList';
 
 export default function Dashboard() {
   const { user, logout } = useAuth();

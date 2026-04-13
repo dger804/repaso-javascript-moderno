@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { login } from './auth.service';
+import { login, getMe } from './auth.service';
 import { useAuth } from './AuthContext';
 
 export default function Login() {
@@ -21,7 +21,7 @@ export default function Login() {
 
     try {
       await login(email, password);
-      const userData = await login(email, password);
+      const userData = await getMe();
       setUser(userData);
     } catch (err) {
       console.error(err);

@@ -1,19 +1,19 @@
-import { loginRequest, getMeRequest } from './auth.api';
+import apiClient from '../shared/api/client';
 
 export const login = async (email: string, password: string) => {
-  const data = await loginRequest(email, password);
+  const res = await apiClient.post('/auth/login', { email, password });
 
-  localStorage.setItem('token', data.access_token);
+  console.log('LOGIN RESPONSE:', res.data);
 
-  return data;
+  const token = res.data.data.access_token;
+  localStorage.setItem('token', token);
+
+  return token;
 };
 
 export const getMe = async () => {
-  const token = localStorage.getItem('token');
-
-  if (!token) throw new Error('No token');
-
-  return getMeRequest(token);
+  const res = await apiClient.get('/auth/me');
+  return res.data;
 };
 
 export const logout = () => {

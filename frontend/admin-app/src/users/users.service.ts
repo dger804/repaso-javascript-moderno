@@ -1,19 +1,7 @@
-const API_URL = import.meta.env.VITE_API_URL;
+import apiClient from '../shared/api/client';
 
-export const getUsers = async (page=1) => {
-  const token = localStorage.getItem('token');
+export const getUsers = async (page = 1) => {
+  const res = await apiClient.get(`/users?page=${page}`);
 
-  const res = await fetch(`${API_URL}/users?page=${page}`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
-
-  if (!res.ok) {
-    throw new Error('Error fetching users');
-  }
-
-  const data = await res.json();
-
-  return data.data;
+  return res.data.data; // items + pagination
 };

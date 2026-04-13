@@ -3,8 +3,6 @@ import apiClient from '../shared/api/client';
 export const login = async (email: string, password: string) => {
   const res = await apiClient.post('/auth/login', { email, password });
 
-  console.log('LOGIN RESPONSE:', res.data);
-
   const token = res.data.data.access_token;
   localStorage.setItem('token', token);
 
@@ -13,7 +11,7 @@ export const login = async (email: string, password: string) => {
 
 export const getMe = async () => {
   const res = await apiClient.get('/auth/me');
-  return res.data;
+  return res.data.data;
 };
 
 export const logout = () => {

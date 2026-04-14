@@ -4,6 +4,7 @@ import Login from './auth/Login';
 import Dashboard from './dashboard/Dashboard';
 import ProtectedRoute from './auth/ProtectedRoute';
 import UsersList from './users/UsersList';
+import EditUser from './users/EditUser';
 
 function App() {
   return (
@@ -24,6 +25,14 @@ function App() {
           element={
             <ProtectedRoute requiredRole="ADMIN">
               <UsersList />
+            </ProtectedRoute>
+          }          
+        />
+        <Route
+          path="/users/:id/edit"
+          element={
+            <ProtectedRoute requiredRole="ADMIN">
+              <EditUser />
             </ProtectedRoute>
           }
         />

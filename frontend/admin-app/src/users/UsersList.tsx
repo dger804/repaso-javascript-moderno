@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 
 import { getUsers } from './users.service';
 
@@ -49,6 +50,9 @@ export default function UsersList() {
               <td>{user.email}</td>
               <td>{user.name || '-'}</td>
               <td>{user.role}</td>
+              <td>
+                <Link to={`/users/${user.id}/edit`}>Edit</Link>
+              </td>
             </tr>
           ))}
         </tbody>

@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 
 import { getUsers } from './users.service';
+import { deleteUser } from './users.service';
 
 type User = {
   id: number;
@@ -29,6 +30,22 @@ export default function UsersList() {
     loadUsers();
   }, []);
 
+  const handleDelete = async (id: number) => {
+    const confirmDelete = window.confirm('Are you sure?');
+
+    if (!confirmDelete) return;
+
+    try {
+      await deleteUser(id);
+
+      // 🔥 actualizar lista sin recargar
+      setUsers((prev) => prev.filter((user) => user.id !== id));
+
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   return (
     <div>
       <h2>Users</h2>
@@ -40,6 +57,7 @@ export default function UsersList() {
             <th>Email</th>
             <th>Name</th>
             <th>Role</th>
+            <th>Actions</th>
           </tr>
         </thead>
 
@@ -51,7 +69,10 @@ export default function UsersList() {
               <td>{user.name || '-'}</td>
               <td>{user.role}</td>
               <td>
-                <Link to={`/users/${user.id}/edit`}>Edit</Link>
+                <div style={{ display: 'flex', gap: '8px' }}>
+                  <Link to={`/users/${user.id}/edit`}>Edit</Link>
+                  <button onClick={() => handleDelete(user.id)}>Delete</button>
+                </div>
               </td>
             </tr>
           ))}

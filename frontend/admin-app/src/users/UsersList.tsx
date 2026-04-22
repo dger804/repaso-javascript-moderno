@@ -14,7 +14,9 @@ type User = {
 export default function UsersList() {
   const [users, setUsers] = useState<User[]>([]);
   const [page, setPage] = useState(1);
-    const [totalPages, setTotalPages] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [showModal, setShowModal] = useState(false);
+  const [selectedUserId, setSelectedUserId] = useState<number | null>(null);
 
   useEffect(() => {
     const loadUsers = async () => {
@@ -46,6 +48,50 @@ export default function UsersList() {
     }
   };
 
+  const openModal = (id: number) => {
+    setSelectedUserId(id);
+    setShowModal(true);
+  };
+
+  const closeModal = () => {
+    setShowModal(false);
+    setSelectedUserId(null);
+  };
+
+  const confirmDelete = async () => {
+    if (!selectedUserId) return;
+
+    try {
+      await deleteUser(selectedUserId);
+
+      setUsers((prev) =>
+        prev.filter((user) => user.id !== selectedUserId)
+      );
+
+      closeModal();
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const overlayStyle: React.CSSProperties = {
+    position: 'fixed',
+    top: 0,
+    left: 0,
+    width: '100%',
+    height: '100%',
+    background: 'rgba(0,0,0,0.5)',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+  };
+
+  const modalStyle: React.CSSProperties = {
+    background: '#fff',
+    padding: '20px',
+    borderRadius: '8px',
+  };
+
   return (
     <div>
       <h2>Users</h2>
@@ -71,13 +117,27 @@ export default function UsersList() {
               <td>
                 <div style={{ display: 'flex', gap: '8px' }}>
                   <Link to={`/users/${user.id}/edit`}>Edit</Link>
-                  <button onClick={() => handleDelete(user.id)}>Delete</button>
+                  <button onClick={() => openModal(user.id)}>
+                    Delete
+                  </button>
                 </div>
               </td>
             </tr>
           ))}
         </tbody>
       </table>
+      {showModal && (
+        <div style={overlayStyle}>
+          <div style={modalStyle}>
+            <p>Are you sure you want to delete this user?</p>
+
+            <div style={{ display: 'flex', gap: '10px' }}>
+              <button onClick={confirmDelete}>Yes, delete</button>
+              <button onClick={closeModal}>Cancel</button>
+            </div>
+          </div>
+        </div>
+      )}
       <div style={{ marginTop: '10px' }}>
         <button
             onClick={() => setPage((p) => Math.max(p - 1, 1))}

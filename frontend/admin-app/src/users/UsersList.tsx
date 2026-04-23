@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 
-import { getUsers } from './users.service';
-import { deleteUser } from './users.service';
+import { getUsers, deleteUser } from './users.service';
+import  Modal from '../shared/components/Modal'
 
 type User = {
   id: number;
@@ -30,23 +30,7 @@ export default function UsersList() {
     };
 
     loadUsers();
-  }, []);
-
-  const handleDelete = async (id: number) => {
-    const confirmDelete = window.confirm('Are you sure?');
-
-    if (!confirmDelete) return;
-
-    try {
-      await deleteUser(id);
-
-      // 🔥 actualizar lista sin recargar
-      setUsers((prev) => prev.filter((user) => user.id !== id));
-
-    } catch (err) {
-      console.error(err);
-    }
-  };
+  }, [page]);
 
   const openModal = (id: number) => {
     setSelectedUserId(id);
@@ -72,24 +56,6 @@ export default function UsersList() {
     } catch (err) {
       console.error(err);
     }
-  };
-
-  const overlayStyle: React.CSSProperties = {
-    position: 'fixed',
-    top: 0,
-    left: 0,
-    width: '100%',
-    height: '100%',
-    background: 'rgba(0,0,0,0.5)',
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-  };
-
-  const modalStyle: React.CSSProperties = {
-    background: '#fff',
-    padding: '20px',
-    borderRadius: '8px',
   };
 
   return (
@@ -126,18 +92,19 @@ export default function UsersList() {
           ))}
         </tbody>
       </table>
-      {showModal && (
-        <div style={overlayStyle}>
-          <div style={modalStyle}>
-            <p>Are you sure you want to delete this user?</p>
+      <Modal isOpen={showModal} onClose={closeModal}>
+        <p>Are you sure you want to delete this user?</p>
+        <div style={{ display: 'flex', gap: '10px', marginTop: '10px' }}>
+          <button
+            onClick={confirmDelete}
+            style={{ background: 'red', color: 'white' }}
+          >
+            Yes, delete
+          </button>
 
-            <div style={{ display: 'flex', gap: '10px' }}>
-              <button onClick={confirmDelete}>Yes, delete</button>
-              <button onClick={closeModal}>Cancel</button>
-            </div>
-          </div>
+          <button onClick={closeModal}>Cancel</button>
         </div>
-      )}
+      </Modal>
       <div style={{ marginTop: '10px' }}>
         <button
             onClick={() => setPage((p) => Math.max(p - 1, 1))}
